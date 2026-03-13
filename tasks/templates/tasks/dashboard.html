@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard - ESMT</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        :root {
+            --bg: #F0F4F8; --white: #FFFFFF; --primary: #2E7D6B; --primary-light: #4CAF93;
+            --blue: #4A90C4; --blue-light: #E8F4FD; --text: #2C3E50; --text-light: #6C757D;
+            --border: #E9ECEF; --danger: #dc3545;
+        }
+        body { background: var(--bg); font-family: 'Segoe UI', sans-serif; color: var(--text); }
+        .navbar { background: var(--white); padding: 0 2rem; height: 65px; display: flex; justify-content: space-between; align-items: center; border-bottom: 3px solid var(--primary); box-shadow: 0 2px 10px rgba(0,0,0,0.06); position: sticky; top: 0; z-index: 100; }
+        .navbar-brand { display: flex; align-items: center; gap: 10px; }
+        .navbar-brand .logo { width: 38px; height: 38px; background: var(--primary); border-radius: 8px; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 18px; }
+        .navbar-brand h2 { color: var(--primary); font-size: 1.2rem; }
+        .navbar-right { display: flex; align-items: center; gap: 15px; }
+        .user-info { display: flex; align-items: center; gap: 8px; font-size: 0.9rem; color: var(--text-light); }
+        .user-avatar { width: 35px; height: 35px; background: var(--primary-light); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 14px; }
+        .btn-profile { background: var(--blue-light); color: var(--blue); padding: 7px 14px; border-radius: 6px; text-decoration: none; font-size: 0.85rem; font-weight: 600; }
+        .btn-logout { background: none; border: 1px solid var(--border); color: var(--text-light); padding: 7px 14px; border-radius: 6px; cursor: pointer; font-size: 0.85rem; }
+        .btn-logout:hover { background: #f8f9fa; color: var(--danger); border-color: var(--danger); }
+        .container { padding: 25px 30px; max-width: 1200px; margin: auto; }
+        .prime-card { background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%); color: white; padding: 25px 30px; border-radius: 16px; margin-bottom: 25px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 15px rgba(46,125,107,0.3); }
+        .prime-info h3 { font-size: 1rem; opacity: 0.85; margin-bottom: 8px; }
+        .prime-value { font-size: 2.2rem; font-weight: 700; }
+        .prime-label { font-size: 0.85rem; opacity: 0.8; margin-top: 5px; }
+        .prime-icon { font-size: 3rem; opacity: 0.3; }
+        .notif-card { background: var(--white); border-radius: 12px; padding: 20px; margin-bottom: 25px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); border-left: 5px solid var(--primary); }
+        .notif-title { font-weight: 700; margin-bottom: 12px; color: var(--text); font-size: 1rem; }
+        .notif-item { padding: 10px 14px; background: #F0FFF4; border-radius: 8px; margin-bottom: 8px; font-size: 0.9rem; color: var(--text); display: flex; justify-content: space-between; align-items: center; }
+        .notif-time { font-size: 0.75rem; color: var(--text-light); white-space: nowrap; margin-left: 10px; }
+        .stats-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-bottom: 25px; }
+        .stat-card { background: var(--white); border-radius: 12px; padding: 20px; text-align: center; box-shadow: 0 2px 8px rgba(0,0,0,0.05); border-top: 4px solid var(--primary); }
+        .stat-card.blue { border-top-color: var(--blue); }
+        .stat-card.orange { border-top-color: #FF8C42; }
+        .stat-number { font-size: 2rem; font-weight: 700; color: var(--primary); }
+        .stat-card.blue .stat-number { color: var(--blue); }
+        .stat-card.orange .stat-number { color: #FF8C42; }
+        .stat-label { font-size: 0.85rem; color: var(--text-light); margin-top: 4px; }
+        .section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+        .section-title { font-size: 1.1rem; font-weight: 700; color: var(--text); }
+        .btn-add { background: var(--primary); color: white; padding: 10px 18px; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 0.9rem; }
+        .btn-add:hover { background: var(--primary-light); }
+        .project-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 15px; margin-bottom: 25px; }
+        .project-card { background: var(--white); border-radius: 12px; padding: 20px; border-left: 5px solid var(--blue); box-shadow: 0 2px 8px rgba(0,0,0,0.05); transition: transform 0.2s; }
+        .project-card:hover { transform: translateY(-2px); box-shadow: 0 6px 15px rgba(0,0,0,0.1); }
+        .project-card h4 { color: var(--text); margin-bottom: 6px; font-size: 1rem; }
+        .project-creator { font-size: 0.8rem; color: var(--text-light); margin-bottom: 15px; }
+        .btn-task { background: var(--primary); color: white; padding: 6px 12px; border-radius: 6px; text-decoration: none; font-size: 0.8rem; font-weight: 600; }
+        .btn-task:hover { background: var(--primary-light); }
+        .empty-state { text-align: center; padding: 30px; color: var(--text-light); background: var(--white); border-radius: 12px; }
+        .toolbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; flex-wrap: wrap; gap: 10px; }
+        .filters { display: flex; gap: 8px; align-items: center; }
+        .filters select { padding: 9px 12px; border: 1px solid var(--border); border-radius: 8px; font-size: 0.9rem; background: var(--white); color: var(--text); }
+        .btn-filter { background: var(--blue); color: white; border: none; padding: 9px 16px; border-radius: 8px; cursor: pointer; font-size: 0.9rem; font-weight: 600; }
+        .table-container { background: var(--white); border-radius: 14px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+        table { width: 100%; border-collapse: collapse; }
+        th { background: #F8FAFC; color: var(--text-light); padding: 12px 16px; text-align: left; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 2px solid var(--border); }
+        td { padding: 14px 16px; border-bottom: 1px solid var(--border); font-size: 0.9rem; vertical-align: middle; }
+        tr:last-child td { border-bottom: none; }
+        tr:hover td { background: #FAFBFC; }
+        .badge { padding: 4px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: 700; display: inline-block; }
+        .badge-terminé { background: #D4EDDA; color: #155724; }
+        .badge-en-cours { background: #FFF3CD; color: #856404; }
+        .badge-a-faire { background: #E2E8F0; color: #4A5568; }
+        .badge-prof { background: #E8F4FD; color: var(--blue); }
+        .badge-etudiant { background: #F0FFF4; color: var(--primary); }
+        .deadline-normal { color: var(--text-light); font-size: 0.85rem; }
+        .deadline-urgent { color: var(--danger); font-weight: 600; font-size: 0.85rem; }
+        .deadline-passed { color: #6C757D; text-decoration: line-through; font-size: 0.85rem; }
+        .status-select { padding: 5px 8px; border: 1px solid var(--border); border-radius: 6px; font-size: 0.8rem; background: var(--white); cursor: pointer; }
+        .notif-bell { position: relative; display: inline-block; }
+        .notif-badge { position: absolute; top: -5px; right: -5px; background: var(--danger); color: white; border-radius: 50%; width: 18px; height: 18px; font-size: 0.7rem; font-weight: 700; display: flex; align-items: center; justify-content: center; }
+        .btn-icon { color: white; padding: 5px 10px; border-radius: 6px; font-size: 0.8rem; border: none; cursor: pointer; text-decoration: none; display: inline-block; }
+        .btn-icon-edit { background: var(--blue); }
+        .btn-icon-delete { background: var(--danger); }
+    </style>
+</head>
+<body>
+
+<div class="navbar">
+    <div class="navbar-brand">
+        <div class="logo">E</div>
+        <h2>ESMT Collaboratif</h2>
+    </div>
+    <div class="navbar-right">
+        <!-- Cloche sans redirection automatique -->
+        <div class="notif-bell">
+            <span style="font-size:1.4rem;">🔔</span>
+            {% if notifications %}
+            <span class="notif-badge">{{ notifications.count }}</span>
+            {% endif %}
+        </div>
+        <div class="user-info">
+            <div class="user-avatar">{{ request.user.username|first|upper }}</div>
+            <div>
+                <div style="font-weight:600; color: var(--text); font-size:0.9rem;">{{ request.user.get_full_name|default:request.user.username }}</div>
+                <span class="badge {% if request.user.role == 'Professeur' %}badge-prof{% else %}badge-etudiant{% endif %}">{{ request.user.role }}</span>
+            </div>
+        </div>
+        <a href="{% url 'profile' %}" class="btn-profile">👤 Profil</a>
+        <form method="post" action="{% url 'logout' %}">
+            {% csrf_token %}
+            <button type="submit" class="btn-logout">Déconnexion</button>
+        </form>
+    </div>
+</div>
+
+<div class="container">
+
+    {% if request.user.role == 'Professeur' %}
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 25px;">
+        <!-- Prime Trimestrielle -->
+        <div class="prime-card" style="margin-bottom: 0; background: linear-gradient(135deg, var(--blue) 0%, var(--blue-light) 100%); color: var(--text);">
+            <div class="prime-info">
+                <h3 style="color: var(--text); opacity: 0.8;">📊 Évaluation Trimestrielle</h3>
+                <div class="prime-value" style="color: var(--primary);">{{ prime_trimestrielle|default:"0" }} FCFA</div>
+                <div class="prime-label">
+                    {% if prime_trimestrielle == 100000 %}✅ 100% (Trimestre)
+                    {% elif prime_trimestrielle == 30000 %}👍 90%+ (Trimestre)
+                    {% else %}📈 Objectif : 90% ce trimestre{% endif %}
+                </div>
+            </div>
+            <div class="prime-icon" style="color: var(--primary); opacity: 0.2;">🕒</div>
+        </div>
+
+        <!-- Prime Annuelle -->
+        <div class="prime-card" style="margin-bottom: 0;">
+            <div class="prime-info">
+                <h3>🏆 Évaluation Annuelle</h3>
+                <div class="prime-value">{{ prime_annuelle|default:"0" }} FCFA</div>
+                <div class="prime-label">
+                    {% if prime_annuelle == 100000 %}✅ 100% (Année)
+                    {% elif prime_annuelle == 30000 %}👍 90%+ (Année)
+                    {% else %}📊 Objectif : 90% cette année{% endif %}
+                </div>
+            </div>
+            <div class="prime-icon">🎯</div>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- NOTIFICATIONS -->
+    {% if notifications %}
+    <div class="notif-card">
+        <div class="notif-title">🔔 Notifications ({{ notifications.count }})</div>
+        {% for notif in notifications %}
+        <div class="notif-item">
+            <span>{{ notif.message }}</span>
+            <span class="notif-time">{{ notif.created_at|date:"d/m/Y H:i" }}</span>
+        </div>
+        {% endfor %}
+        <!-- ✅ Formulaire POST au lieu de lien GET -->
+        <form method="post" action="{% url 'mark_notifications_read' %}">
+            {% csrf_token %}
+            <button type="submit" style="background:none; border:none; cursor:pointer; color:var(--primary); font-weight:600; font-size:0.85rem; padding:0; margin-top:8px;">✔ Tout marquer comme lu</button>
+        </form>
+    </div>
+    {% endif %}
+
+    <div class="stats-row">
+        <div class="stat-card">
+            <div class="stat-number">{{ projects.count }}</div>
+            <div class="stat-label">Projets actifs</div>
+        </div>
+        <div class="stat-card blue">
+            <div class="stat-number">{{ tasks.count }}</div>
+            <div class="stat-label">Tâches totales</div>
+        </div>
+        <div class="stat-card orange">
+            <div class="stat-number">{{ tasks|length }}</div>
+            <div class="stat-label">Tâches affichées</div>
+        </div>
+    </div>
+
+    <div class="section-header">
+        <span class="section-title">📁 Mes Projets</span>
+        <a href="{% url 'create_project' %}" class="btn-add">+ Nouveau Projet</a>
+    </div>
+
+    <div class="project-grid">
+        {% for project in projects %}
+        <div class="project-card">
+            <h4>{{ project.title }}</h4>
+            <div class="project-creator">👤 {{ project.creator.get_full_name|default:project.creator.username }}</div>
+            <div style="display:flex; gap:6px; flex-wrap:wrap; margin-top:10px;">
+                {% if project.creator == request.user %}
+                <a href="{% url 'create_task' project.id %}" class="btn-task">+ Tâche</a>
+                <a href="{% url 'edit_project' project.id %}" class="btn-icon btn-icon-edit">✏️ Modifier</a>
+                <form method="post" action="{% url 'delete_project' project.id %}" onsubmit="return confirm('Supprimer ce projet ?')">
+                    {% csrf_token %}
+                    <button type="submit" class="btn-icon btn-icon-delete">🗑 Supprimer</button>
+                </form>
+                {% else %}
+                <span style="font-size:0.8rem; color: var(--text-light);">Membre du projet</span>
+                {% endif %}
+            </div>
+        </div>
+        {% empty %}
+        <div class="empty-state" style="grid-column: 1/-1;">
+            <p>📂 Aucun projet disponible. Créez votre premier projet !</p>
+        </div>
+        {% endfor %}
+    </div>
+
+    <div class="toolbar">
+        <span class="section-title">📋 Mes Tâches</span>
+        <form class="filters" method="GET">
+            <select name="status">
+                <option value="">Tous les statuts</option>
+                {% for code, label in status_choices %}
+                <option value="{{ code }}" {% if request.GET.status == code %}selected{% endif %}>{{ label }}</option>
+                {% endfor %}
+            </select>
+            <button type="submit" class="btn-filter">Filtrer</button>
+        </form>
+    </div>
+
+    <div class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th>Tâche</th>
+                    <th>Projet</th>
+                    <th>Assigné à</th>
+                    <th>Deadline</th>
+                    <th>Statut</th>
+                    <th>Action</th>
+                    <th>Gérer</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for task in tasks %}
+                <tr>
+                    <td><strong>{{ task.title }}</strong><br><span style="font-size:0.8rem; color:var(--text-light);">{{ task.description|truncatechars:40 }}</span></td>
+                    <td>{{ task.project.title }}</td>
+                    <td>{{ task.assigned_to.get_full_name|default:task.assigned_to.username }}</td>
+                    <td>
+                        <span class="{% if task.status == 'terminé' %}{% if not task.is_completed_on_time %}deadline-urgent{% else %}deadline-normal{% endif %}{% else %}{% if task.deadline < now %}deadline-passed{% elif task.deadline.date == today %}deadline-urgent{% else %}deadline-normal{% endif %}{% endif %}">
+                            {{ task.deadline|date:"d/m/Y H:i" }}
+                            {% if task.status == 'terminé' and not task.is_completed_on_time %}
+                                <br><small style="color:var(--danger)">Retard</small>
+                            {% endif %}
+                        </span>
+                    </td>
+                    <td>
+                        <span class="badge {% if task.status == 'terminé' %}badge-terminé{% elif task.status == 'en cours' %}badge-en-cours{% else %}badge-a-faire{% endif %}">
+                            {{ task.status }}
+                        </span>
+                    </td>
+                    <td>
+                        {% if task.assigned_to == request.user %}
+                        <form action="{% url 'update_task_status' task.id %}" method="POST">
+                            {% csrf_token %}
+                            <input type="hidden" name="next" value="?status={{ request.GET.status }}">
+                            <select name="status" class="status-select" onchange="this.form.submit()">
+                                {% for code, label in status_choices %}
+                                <option value="{{ code }}" {% if task.status == code %}selected{% endif %}>{{ label }}</option>
+                                {% endfor %}
+                            </select>
+                        </form>
+                        {% else %}
+                        <span style="font-size:0.8rem; color:var(--text-light);">—</span>
+                        {% endif %}
+                    </td>
+                    <!-- ✅ COLONNE GÉRER ajoutée -->
+                    <td>
+                        {% if task.project.creator == request.user %}
+                        <div style="display:flex; gap:5px;">
+                            <a href="{% url 'edit_task' task.id %}" class="btn-icon btn-icon-edit">✏️</a>
+                            <form method="post" action="{% url 'delete_task' task.id %}" onsubmit="return confirm('Supprimer cette tâche ?')">
+                                {% csrf_token %}
+                                <button type="submit" class="btn-icon btn-icon-delete">🗑</button>
+                            </form>
+                        </div>
+                        {% else %}
+                        <span style="font-size:0.8rem; color:var(--text-light);">—</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="7" style="text-align:center; padding:30px; color:var(--text-light);">Aucune tâche trouvée.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+</div>
+</body>
+</html>

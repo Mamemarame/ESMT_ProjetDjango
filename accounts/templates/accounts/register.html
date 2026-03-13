@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Inscription - ESMT</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { background-color: #f0f4f8; font-family: 'Segoe UI', sans-serif; display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 20px; }
+        .register-card { background: #fff; padding: 40px; border-radius: 12px; border-top: 5px solid #87CEEB; box-shadow: 0 4px 20px rgba(0,0,0,0.08); width: 100%; max-width: 420px; }
+        h2 { color: #0056b3; text-align: center; margin-bottom: 25px; font-size: 24px; }
+        .form-group { margin-bottom: 18px; }
+        label { display: block; font-size: 14px; font-weight: 600; color: #333; margin-bottom: 5px; }
+        input[type="text"], input[type="password"], input[type="email"], select { width: 100%; padding: 11px 14px; border: 1px solid #ddd; border-radius: 6px; font-size: 14px; transition: border 0.2s; }
+        input:focus, select:focus { border-color: #87CEEB; outline: none; }
+        input[type="file"] { width: 100%; padding: 8px; border: 1px dashed #ccc; border-radius: 6px; font-size: 13px; background: #fafafa; }
+        .errorlist { list-style: none; margin-top: 5px; }
+        .errorlist li { color: #e74c3c; font-size: 13px; background: #fdecea; padding: 6px 10px; border-radius: 4px; margin-top: 4px; }
+        .btn { width: 100%; background-color: #87CEEB; color: white; padding: 13px; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 16px; margin-top: 10px; transition: background 0.2s; }
+        .btn:hover { background-color: #00BFFF; }
+        .links { text-align: center; margin-top: 15px; font-size: 14px; }
+        .links a { color: #87CEEB; text-decoration: none; font-weight: 600; }
+    </style>
+</head>
+<body>
+    <div class="register-card">
+        <h2>Créer un compte</h2>
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+
+            <div class="form-group">
+                <label for="{{ form.username.id_for_label }}">Nom d'utilisateur</label>
+                {{ form.username }}
+                {% if form.username.errors %}
+                    <ul class="errorlist">{% for e in form.username.errors %}<li>{{ e }}</li>{% endfor %}</ul>
+                {% endif %}
+            </div>
+            <div class="form-group">
+    <label for="{{ form.first_name.id_for_label }}">Prénom</label>
+    {{ form.first_name }}
+    {% if form.first_name.errors %}
+        <ul class="errorlist">{% for e in form.first_name.errors %}<li>{{ e }}</li>{% endfor %}</ul>
+    {% endif %}
+</div>
+
+<div class="form-group">
+    <label for="{{ form.last_name.id_for_label }}">Nom</label>
+    {{ form.last_name }}
+    {% if form.last_name.errors %}
+        <ul class="errorlist">{% for e in form.last_name.errors %}<li>{{ e }}</li>{% endfor %}</ul>
+    {% endif %}
+</div>
+
+<div class="form-group">
+    <label for="{{ form.email.id_for_label }}">Email</label>
+    {{ form.email }}
+    {% if form.email.errors %}
+        <ul class="errorlist">{% for e in form.email.errors %}<li>{{ e }}</li>{% endfor %}</ul>
+    {% endif %}
+</div>
+
+<div class="form-group">
+    <label for="{{ form.phone.id_for_label }}">Téléphone</label>
+    {{ form.phone }}
+    {% if form.phone.errors %}
+        <ul class="errorlist">{% for e in form.phone.errors %}<li>{{ e }}</li>{% endfor %}</ul>
+    {% endif %}
+</div>
+
+            <div class="form-group">
+                <label for="{{ form.role.id_for_label }}">Rôle</label>
+                {{ form.role }}
+                {% if form.role.errors %}
+                    <ul class="errorlist">{% for e in form.role.errors %}<li>{{ e }}</li>{% endfor %}</ul>
+                {% endif %}
+            </div>
+
+            <div class="form-group">
+                <label for="{{ form.avatar.id_for_label }}">Avatar (optionnel)</label>
+                {{ form.avatar }}
+                {% if form.avatar.errors %}
+                    <ul class="errorlist">{% for e in form.avatar.errors %}<li>{{ e }}</li>{% endfor %}</ul>
+                {% endif %}
+            </div>
+
+            <div class="form-group">
+                <label for="{{ form.password1.id_for_label }}">Mot de passe</label>
+                {{ form.password1 }}
+                {% if form.password1.errors %}
+                    <ul class="errorlist">{% for e in form.password1.errors %}<li>{{ e }}</li>{% endfor %}</ul>
+                {% endif %}
+            </div>
+
+            <div class="form-group">
+                <label for="{{ form.password2.id_for_label }}">Confirmer le mot de passe</label>
+                {{ form.password2 }}
+                {% if form.password2.errors %}
+                    <ul class="errorlist">{% for e in form.password2.errors %}<li>{{ e }}</li>{% endfor %}</ul>
+                {% endif %}
+            </div>
+
+            <button type="submit" class="btn">S'inscrire</button>
+        </form>
+        <div class="links">
+            <p>Déjà inscrit ? <a href="{% url 'login' %}">Se connecter</a></p>
+        </div>
+    </div>
+</body>
+</html>

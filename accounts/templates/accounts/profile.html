@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Mon Profil - ESMT</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        :root {
+            --primary: #2E7D6B;
+            --primary-light: #4CAF93;
+            --bg: #F0F4F8;
+            --white: #FFFFFF;
+            --text: #2C3E50;
+            --text-light: #6C757D;
+            --border: #E9ECEF;
+            --danger: #dc3545;
+            --blue: #4A90C4;
+        }
+        body { background: var(--bg); font-family: 'Segoe UI', sans-serif; color: var(--text); }
+
+        /* NAVBAR */
+        .navbar { background: var(--white); padding: 0 2rem; height: 65px; display: flex; justify-content: space-between; align-items: center; border-bottom: 3px solid var(--primary); box-shadow: 0 2px 10px rgba(0,0,0,0.06); position: sticky; top: 0; z-index: 100; }
+        .navbar-brand { display: flex; align-items: center; gap: 10px; }
+        .logo { width: 38px; height: 38px; background: var(--primary); border-radius: 8px; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 18px; }
+        .navbar h2 { color: var(--primary); font-size: 1.2rem; }
+        .btn-back { background: var(--bg); color: var(--text-light); padding: 8px 15px; border-radius: 6px; text-decoration: none; font-size: 0.85rem; border: 1px solid var(--border); }
+        .btn-back:hover { background: var(--border); }
+
+        .container { max-width: 800px; margin: 30px auto; padding: 0 20px; }
+
+        /* PROFIL HEADER */
+        .profile-header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+            border-radius: 16px; padding: 30px; margin-bottom: 25px;
+            display: flex; align-items: center; gap: 25px; color: white;
+            box-shadow: 0 4px 15px rgba(46,125,107,0.3);
+        }
+        .avatar-circle {
+            width: 80px; height: 80px; border-radius: 50%;
+            background: rgba(255,255,255,0.2); border: 3px solid rgba(255,255,255,0.5);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 2rem; font-weight: bold; color: white; overflow: hidden;
+            flex-shrink: 0;
+        }
+        .avatar-circle img { width: 100%; height: 100%; object-fit: cover; }
+        .profile-info h3 { font-size: 1.4rem; margin-bottom: 5px; }
+        .profile-info p { opacity: 0.85; font-size: 0.9rem; margin-bottom: 8px; }
+        .badge-role { background: rgba(255,255,255,0.2); padding: 4px 12px; border-radius: 20px; font-size: 0.85rem; font-weight: 600; display: inline-block; }
+
+        /* CARDS */
+        .card { background: var(--white); border-radius: 14px; padding: 25px; margin-bottom: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+        .card-title { display: flex; align-items: center; gap: 8px; font-size: 1rem; font-weight: 700; color: var(--text); margin-bottom: 20px; padding-bottom: 12px; border-bottom: 2px solid var(--border); }
+
+        .form-group { margin-bottom: 18px; }
+        label { display: block; margin-bottom: 6px; font-weight: 600; color: var(--text); font-size: 0.9rem; }
+        input[type="text"], input[type="email"], input[type="password"], input[type="file"] {
+            width: 100%; padding: 11px 14px; border: 1px solid var(--border);
+            border-radius: 8px; font-family: inherit; font-size: 0.95rem;
+            transition: border 0.2s; color: var(--text);
+        }
+        input:focus { border-color: var(--primary); outline: none; box-shadow: 0 0 0 3px rgba(46,125,107,0.1); }
+
+        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+
+        .btn-save { background: var(--primary); color: white; border: none; padding: 12px 25px; border-radius: 8px; font-weight: 700; cursor: pointer; font-size: 0.95rem; transition: background 0.2s; }
+        .btn-save:hover { background: var(--primary-light); }
+        .btn-password { background: var(--blue); color: white; border: none; padding: 12px 25px; border-radius: 8px; font-weight: 700; cursor: pointer; font-size: 0.95rem; transition: background 0.2s; }
+        .btn-password:hover { background: #3a7ab5; }
+
+        .errorlist { list-style: none; margin-top: 5px; }
+        .errorlist li { color: var(--danger); font-size: 0.85rem; background: #fdecea; padding: 5px 10px; border-radius: 4px; margin-top: 3px; }
+
+        .success-msg { background: #d4edda; color: #155724; padding: 12px 16px; border-radius: 8px; margin-bottom: 20px; font-weight: 600; font-size: 0.9rem; }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <div class="navbar-brand">
+            <div class="logo">E</div>
+            <h2>ESMT Collaboratif</h2>
+        </div>
+        <a href="{% url 'dashboard' %}" class="btn-back">← Tableau de bord</a>
+    </div>
+
+    <div class="container">
+
+        <!-- HEADER PROFIL -->
+        <div class="profile-header">
+            <div class="avatar-circle">
+                {% if request.user.avatar %}
+                    <img src="{{ request.user.avatar.url }}" alt="avatar">
+                {% else %}
+                    {{ request.user.username|first|upper }}
+                {% endif %}
+            </div>
+            <div class="profile-info">
+                <h3>{{ request.user.get_full_name|default:request.user.username }}</h3>
+                <p>{{ request.user.email|default:"Aucun email renseigné" }}</p>
+                <span class="badge-role">{{ request.user.role }}</span>
+            </div>
+        </div>
+
+        <!-- FORMULAIRE PROFIL -->
+        <div class="card">
+            <div class="card-title">👤 Modifier mes informations</div>
+            <form method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Prénom</label>
+                        {{ profile_form.first_name }}
+                        {% if profile_form.first_name.errors %}
+                            <ul class="errorlist">{% for e in profile_form.first_name.errors %}<li>{{ e }}</li>{% endfor %}</ul>
+                        {% endif %}
+                    </div>
+                    <div class="form-group">
+                        <label>Nom</label>
+                        {{ profile_form.last_name }}
+                        {% if profile_form.last_name.errors %}
+                            <ul class="errorlist">{% for e in profile_form.last_name.errors %}<li>{{ e }}</li>{% endfor %}</ul>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Email</label>
+                    {{ profile_form.email }}
+                    {% if profile_form.email.errors %}
+                        <ul class="errorlist">{% for e in profile_form.email.errors %}<li>{{ e }}</li>{% endfor %}</ul>
+                    {% endif %}
+                </div>
+                <div class="form-group">
+                    <label>Avatar</label>
+                    {{ profile_form.avatar }}
+                    {% if request.user.avatar %}
+                        <p style="font-size:0.8rem; color:var(--text-light); margin-top:5px;">Avatar actuel : {{ request.user.avatar }}</p>
+                    {% endif %}
+                </div>
+                <button type="submit" name="update_profile" class="btn-save">💾 Sauvegarder</button>
+            </form>
+        </div>
+
+        <!-- FORMULAIRE MOT DE PASSE -->
+        <div class="card">
+            <div class="card-title">🔒 Changer le mot de passe</div>
+            <form method="POST">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label>Mot de passe actuel</label>
+                    {{ password_form.old_password }}
+                    {% if password_form.old_password.errors %}
+                        <ul class="errorlist">{% for e in password_form.old_password.errors %}<li>{{ e }}</li>{% endfor %}</ul>
+                    {% endif %}
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Nouveau mot de passe</label>
+                        {{ password_form.new_password1 }}
+                        {% if password_form.new_password1.errors %}
+                            <ul class="errorlist">{% for e in password_form.new_password1.errors %}<li>{{ e }}</li>{% endfor %}</ul>
+                        {% endif %}
+                    </div>
+                    <div class="form-group">
+                        <label>Confirmer le mot de passe</label>
+                        {{ password_form.new_password2 }}
+                        {% if password_form.new_password2.errors %}
+                            <ul class="errorlist">{% for e in password_form.new_password2.errors %}<li>{{ e }}</li>{% endfor %}</ul>
+                        {% endif %}
+                    </div>
+                </div>
+                <button type="submit" name="change_password" class="btn-password">🔑 Modifier le mot de passe</button>
+            </form>
+        </div>
+
+    </div>
+</body>
+</html>
